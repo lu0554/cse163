@@ -1,0 +1,56 @@
+data = data[["gained_asset", "depressed", "durable_asset", "save_asset"]]
+    gained_asset = data[["gained_asset"][0]]
+    depression_status = data[["depressed"][0]]
+    durable_asset = data[["durable_asset"][0]]
+    save_asset = data[["save_asset"][0]]
+    print(data)
+    df1 = pd.DataFrame({'gained_asset': gained_asset, 'Depression': depression_status})
+    df2 = pd.DataFrame({'durable_asset': durable_asset, 'Depression': depression_status})
+    df3 = pd.DataFrame({'save_asset': save_asset, 'Depression': depression_status})
+    sns.boxplot(x='Depression', y='gained_asset', data=df1)
+    sns.boxplot(x='Depression', y='durable_asset', data=df2)
+    sns.boxplot(x='Depression', y='save_asset', data=df3)
+    fig, [[ax1, ax2], [ax3, ax4]] = plt.subplots(nrows=2, ncols=2)
+    ax1.hist(gained_asset, bins=3, color='green', alpha=0.5, label='Non-depressed')
+    ax1.hist([gained_asset[i] for i in range(len(depression_status)) if depression_status[i] == 1],
+                                   bins=3, color='blue', alpha=0.5, label='Depressed')
+    ax1.set_title('durable_asset Distribution by Depression Status')
+    ax1.set_xlabel('durable_asset')
+    ax1.set_ylabel('Depressed')
+    ax2.hist(durable_asset, bins=3, color='green', alpha=0.5, label='Non-depressed')
+    ax2.hist([durable_asset[i] for i in range(len(depression_status)) if depression_status[i] == 1],
+             bins=3, color='blue', alpha=0.5, label='Depressed')
+    ax2.set_title('durable_asset Distribution by Depression Status')
+    ax2.set_xlabel('durable_asset')
+    ax2.set_ylabel('Depressed')
+    ax3.hist(save_asset, bins=3, color='green', alpha=0.5, label='Non-depressed')
+    ax3.hist([save_asset[i] for i in range(len(depression_status)) if depression_status[i] == 1],
+             bins=3, color='blue', alpha=0.5, label='Depressed')
+    ax3.set_title('save_asset Distribution by Depression Status')
+    ax3.set_xlabel('save_asset')
+    ax3.set_ylabel('Depressed')
+
+    plt.show()
+    data = data[["gained_asset", "durable_asset", "save_asset"]]
+    sns.relplot(
+        data=data
+    )
+    plt.savefig('test.png')
+    print(data)
+
+
+def main():
+    data = pd.read_csv('dateset/b_depressed.csv')
+    money_depression_relationship(data)
+
+if __name__ == '__main__':
+    main()
+
+
+
+create new dataset with categorical types
+seperate to five parts
+using lineplot?
+
+all need to seperate first???
+data recreate?
