@@ -77,7 +77,7 @@ def sex_freq(df):
     plt.xticks(rotation=0)
     plt.legend(["Haven't Depressed", "Have Depressed"])
     plt.ylabel('Frequency')
-    plt.show()
+    plt.savefig("sexFreq.png")
 
 
 def logistic_model(df):
@@ -99,7 +99,6 @@ def education_freq(df):
     plt.xlabel('education level')
     plt.ylabel('Frequency')
     plt.savefig('depressedVsEducation.png')
-    plt.show()
 
 
 def number_children(df):
@@ -108,7 +107,6 @@ def number_children(df):
     plt.xlabel('Number children')
     plt.ylabel('Frequency')
     plt.savefig('childrenNumberVsEducation.png')
-    plt.show()
 
 
 def living_expenses(df):
@@ -123,7 +121,7 @@ def living_expenses(df):
     data = get_precent(living_expense, depression_status)
     sns.lineplot(data=data, x="income", y="percentage", ax=ax[1])
     plt.xlabel("expense")
-    plt.show()
+    plt.savefig("livingExpenseVsDepression.png")
 
 
 def main():
