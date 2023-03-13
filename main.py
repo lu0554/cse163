@@ -4,7 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, precision_score, recall_score
+from sklearn.metrics import accuracy_score, precision_score
 sns.set()
 
 
@@ -70,6 +70,15 @@ def get_precent(data, depression):
     return data
 
 
+def sex_freq(df):
+    pd.crosstab(df.sex, df.depressed).plot(kind="bar", figsize=(20, 5))
+    plt.title('Depressed Frequency for Sex')
+    plt.xlabel('Sex (0 = Female, 1 = Male)')
+    plt.xticks(rotation=0)
+    plt.legend(["Haven't Depressed", "Have Depressed"])
+    plt.ylabel('Frequency')
+    plt.show()
+
 
 def logistic_model(df):
     df = df.dropna()
@@ -84,10 +93,47 @@ def logistic_model(df):
     print("Precision score:", precision_score(y_test, y_pred))
 
 
+def education_freq(df):
+    pd.crosstab(df.education_level, df.depressed).plot(kind="bar", figsize=(20, 8))
+    plt.title('Depressed Frequency for education level')
+    plt.xlabel('education level')
+    plt.ylabel('Frequency')
+    plt.savefig('depressedVsEducation.png')
+    plt.show()
+
+
+def number_children(df):
+    pd.crosstab(df.Number_children, df.depressed).plot(kind="bar", figsize=(20, 8))
+    plt.title('Depressed Frequency for number children')
+    plt.xlabel('Number children')
+    plt.ylabel('Frequency')
+    plt.savefig('childrenNumberVsEducation.png')
+    plt.show()
+
+
+def living_expenses(df):
+    depression_status = df[["depressed"][0]]
+    living_expense = df.living_expenses
+    fig, ax = plt.subplots(2)
+    ax[0].hist(living_expense, bins=25, color='green', alpha=0.5, label='Non-depressed')
+    ax[0].hist([living_expense[i] for i in range(len(depression_status)) if depression_status[i] == 1],
+               bins=25, color='blue', alpha=0.5, label='Depressed')
+    ax[0].set_xlabel('living_expenses')
+    ax[0].set_ylabel('Depressed')
+    data = get_precent(living_expense, depression_status)
+    sns.lineplot(data=data, x="income", y="percentage", ax=ax[1])
+    plt.xlabel("expense")
+    plt.show()
+
+
 def main():
     data = pd.read_csv("dateset/b_depressed.csv")
     money_depression_relationship(data)
+    sex_freq(data)
+    education_freq((data))
     logistic_model(data)
+    number_children(data)
+    living_expenses(data)
 
 
 if __name__ == '__main__':
