@@ -70,6 +70,7 @@ def get_precent(data, depression):
     return data
 
 
+
 def logistic_model(df):
     df = df.dropna()
     X = df.loc[:, df.columns != 'depressed']
