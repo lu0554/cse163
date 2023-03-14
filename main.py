@@ -1,10 +1,9 @@
-import numpy as np
-import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score
+from sklearn.ensemble import RandomForestClassifier
+import pandas as pd
 sns.set()
 
 
@@ -14,25 +13,33 @@ def money_depression_relationship(data: pd.DataFrame):
     depression_status = data[["depressed"][0]]
     durable_asset = data[["durable_asset"][0]]
     save_asset = data[["save_asset"][0]]
-    total = data[["gained_asset"][0]] + data[["depressed"][0]] + data[["save_asset"][0]]
+    total = data[["gained_asset"][0]] +\
+        data[["depressed"][0]] + data[["save_asset"][0]]
     fig, [[ax1, ax2], [ax3, ax4]] = plt.subplots(nrows=2, ncols=2)
-    ax1.hist(gained_asset, bins=25, color='green', alpha=0.5, label='Non-depressed')
-    ax1.hist([gained_asset[i] for i in range(len(depression_status)) if depression_status[i] == 1],
+    ax1.hist(gained_asset, bins=25, color='green',
+             alpha=0.5, label='Non-depressed')
+    ax1.hist([gained_asset[i] for i in range(len(depression_status))
+              if depression_status[i] == 1],
              bins=25, color='blue', alpha=0.5, label='Depressed')
     ax1.set_xlabel('gained_asset')
     ax1.set_ylabel('Depressed')
-    ax2.hist(durable_asset, bins=25, color='green', alpha=0.5, label='Non-depressed')
-    ax2.hist([durable_asset[i] for i in range(len(depression_status)) if depression_status[i] == 1],
+    ax2.hist(durable_asset, bins=25, color='green',
+             alpha=0.5, label='Non-depressed')
+    ax2.hist([durable_asset[i] for i in range(len(depression_status))
+              if depression_status[i] == 1],
              bins=25, color='blue', alpha=0.5, label='Depressed')
     ax2.set_xlabel('durable_asset')
     ax2.set_ylabel('Depressed')
-    ax3.hist(save_asset, bins=25, color='green', alpha=0.5, label='Non-depressed')
-    ax3.hist([save_asset[i] for i in range(len(depression_status)) if depression_status[i] == 1],
+    ax3.hist(save_asset, bins=25, color='green',
+             alpha=0.5, label='Non-depressed')
+    ax3.hist([save_asset[i] for i in range(len(depression_status))
+              if depression_status[i] == 1],
              bins=25, color='blue', alpha=0.5, label='Depressed')
     ax3.set_xlabel('save_asset')
     ax3.set_ylabel('Depressed')
     ax4.hist(total, bins=25, color='green', alpha=0.5, label='Non-depressed')
-    ax4.hist([total[i] for i in range(len(depression_status)) if depression_status[i] == 1],
+    ax4.hist([total[i] for i in range(len(depression_status))
+              if depression_status[i] == 1],
              bins=25, color='blue', alpha=0.5, label='Depressed')
     ax4.set_xlabel('total')
     ax4.set_ylabel('Depressed')
@@ -80,21 +87,9 @@ def sex_freq(df):
     plt.savefig("sexFreq.png")
 
 
-def logistic_model(df):
-    df = df.dropna()
-    X = df.loc[:, df.columns != 'depressed']
-    X = pd.get_dummies(X)
-    y = df.depressed
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
-    model = LogisticRegression()
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
-    print("Accuracy score:", accuracy_score(y_test, y_pred))
-    print("Precision score:", precision_score(y_test, y_pred))
-
-
 def education_freq(df):
-    pd.crosstab(df.education_level, df.depressed).plot(kind="bar", figsize=(20, 8))
+    pd.crosstab(df.education_level,
+                df.depressed).plot(kind="bar", figsize=(20, 8))
     plt.title('Depressed Frequency for education level')
     plt.xlabel('education level')
     plt.ylabel('Frequency')
@@ -102,7 +97,8 @@ def education_freq(df):
 
 
 def number_children(df):
-    pd.crosstab(df.Number_children, df.depressed).plot(kind="bar", figsize=(20, 8))
+    pd.crosstab(df.Number_children,
+                df.depressed).plot(kind="bar", figsize=(20, 8))
     plt.title('Depressed Frequency for number children')
     plt.xlabel('Number children')
     plt.ylabel('Frequency')
@@ -113,8 +109,10 @@ def living_expenses(df):
     depression_status = df[["depressed"][0]]
     living_expense = df.living_expenses
     fig, ax = plt.subplots(2)
-    ax[0].hist(living_expense, bins=25, color='green', alpha=0.5, label='Non-depressed')
-    ax[0].hist([living_expense[i] for i in range(len(depression_status)) if depression_status[i] == 1],
+    ax[0].hist(living_expense, bins=25, color='green',
+               alpha=0.5, label='Non-depressed')
+    ax[0].hist([living_expense[i] for i in range(len(depression_status))
+                if depression_status[i] == 1],
                bins=25, color='blue', alpha=0.5, label='Depressed')
     ax[0].set_xlabel('living_expenses')
     ax[0].set_ylabel('Depressed')
@@ -124,14 +122,29 @@ def living_expenses(df):
     plt.savefig("livingExpenseVsDepression.png")
 
 
+def rf(data):
+    data = data.dropna()
+    X = data.loc[:, data.columns != 'depressed']
+    X = pd.get_dummies(X)
+    y = data.depressed
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
+                                                        random_state=42)
+    rf = RandomForestClassifier(n_estimators=100, random_state=42)
+    rf.fit(X_train, y_train)
+    y_pred = rf.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    print('Accuracy:', accuracy)
+    print("Precision score:", precision_score(y_test, y_pred))
+
+
 def main():
     data = pd.read_csv("dateset/b_depressed.csv")
     money_depression_relationship(data)
     sex_freq(data)
     education_freq((data))
-    logistic_model(data)
     number_children(data)
     living_expenses(data)
+    rf(data)
 
 
 if __name__ == '__main__':
